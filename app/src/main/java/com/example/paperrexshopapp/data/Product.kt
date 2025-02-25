@@ -6,5 +6,6 @@ data class Product(
     val productFeatures: List<String>,
     val description: String,
     val images: List<String>,
-    val colors: List<String>? = null
+    val colors: List<String>? = null,
+    val comments: List<Comment>? = null
 )

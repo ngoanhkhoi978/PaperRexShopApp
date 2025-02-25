@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -72,7 +73,9 @@ fun ProductListScreen(viewModel: ProductViewModel = viewModel(), navController:N
         itemsIndexed(viewModel.products) {
                 index,product ->
             ProductItem(product = product, openProductDetail = openProductDetail, id = index)
-
+        }
+        item {
+            Spacer(modifier = Modifier.height(64.dp))
         }
     }
 }
@@ -163,21 +166,25 @@ fun ProductItem(id:Int, product: Product,openProductDetail: (Int) -> Unit ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
+                text = "$" + product.price.toString(),
+                textAlign = TextAlign.Center,
+                color = Color(red = 37, green = 37, blue = 37),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
                 text = product.name,
                 color = Color(red = 0, green = 0, blue = 102),
                 textAlign = TextAlign.Center,
                 lineHeight = 16.sp,
                 fontSize = 12.sp)
 
-            Spacer(modifier = Modifier.height(8.dp))
 
 
-            Text(
-                text = "$" + product.price.toString(),
-                textAlign = TextAlign.Center,
-                color = Color(red = 37, green = 37, blue = 37),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold)
+
+
 
         }
 

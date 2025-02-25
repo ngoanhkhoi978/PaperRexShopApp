@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -22,12 +23,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -36,7 +40,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -46,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -62,6 +69,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.paperrexshopapp.R
+import com.example.paperrexshopapp.data.Comment
 import com.example.paperrexshopapp.viewmodel.ProductViewModel
 
 @Composable
@@ -69,6 +77,17 @@ fun ProductDetail(viewModel: ProductViewModel = viewModel(), navController: NavC
     val product = viewModel.products.get(id)
 
     Column (modifier = Modifier.verticalScroll(rememberScrollState()).background(Color(red = 248, green = 248, blue = 248))) {
+
+
+            TextButton(onClick = {
+                navController.navigate("productList")
+            },) {
+                Text(
+                    text = "← Back",
+                    color = Color.Black)
+            }
+
+
         ImageCarousel(product.images)
 
         HorizontalDivider(
@@ -109,6 +128,20 @@ fun ProductDetail(viewModel: ProductViewModel = viewModel(), navController: NavC
                         color = Color(red = 32, green = 32, blue = 32),
                         fontSize = 12.sp,
                         lineHeight = 12.sp)
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column {
+                product.productFeatures.map {
+                    it ->
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "", tint = Color.Blue, modifier = Modifier.size(18.dp))
+                            Text(text = it, fontSize = 12.sp, lineHeight = 12.sp, fontWeight = FontWeight.Medium)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
 
                 }
             }
@@ -154,12 +187,79 @@ fun ProductDetail(viewModel: ProductViewModel = viewModel(), navController: NavC
 
                 }
             }
+
+            Reviews(product.comments)
+
+            Spacer(modifier = Modifier.height(128.dp))
+
+
         }
 
 
     }
 
 }
+
+
+@Composable
+fun Reviews(comments: List<Comment>?) {
+
+    Column {
+        Text(text = "Reviews", fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+
+        ) {
+
+            comments?.map { comment ->
+                Column(modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(red = 231, green = 224, blue = 236))
+                    .padding(8.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Column {
+                            Row (verticalAlignment = Alignment.Top) {
+                                Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "", tint = Color(174, 180, 183), modifier = Modifier.size(32.dp))
+                                Text(text = comment.username, fontSize = 14.sp)
+                            }
+
+                            Row {
+                                repeat(5) {
+                                    Icon(imageVector = Icons.Filled.Star, contentDescription = "", tint = Color.Yellow)
+                                }
+                            }
+
+                        }
+                        Text(
+                            text = comment.date,
+                            fontSize = 10.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = comment.rate,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(text = comment.content,fontSize = 14.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+
+}
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
